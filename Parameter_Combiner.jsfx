@@ -1,0 +1,73 @@
+/**
+ * JSFX Name: Parameter Combiner
+ * About:
+ *  Generate output params based on input params
+ * Author: Adam Lederer (Rellik)
+ * Licence: GPL v3
+ * REAPER: 5.0
+ * Version: 1.0
+ */
+
+desc:Parameter Combiner
+
+slider1:x=0<0, 1, 0.001>[input 0 - 1] x
+slider2:y=1<0, 1, 0.001>[input 0 - 1] y
+slider3:z=1<0, 1, 0.001>[input 0 - 1] z
+
+slider5:const1=0.5<0, 20, 0.001>[number] value 1
+slider6:const2=10<0, 20, 0.001>[number] value 2
+slider7:const3=20<0, 20, 0.001>[number] value 3
+
+slider10:aArg1=0<0,3,1{x,y,z,value 1,value 2,value 3}>_
+slider11:aOp=0<0,6,1{times,plus,minus,divided by,to the power of,max,min}>operation
+slider12:aArg2=1<0,3,1{x,y,z,value 1,value 2,value 3}>_
+slider13:a=0<0, 1, 0.001>[output 0 - 1] a
+
+slider15:bArg1=6<0,3,1{x,y,z,value 1,value 2,value 3,a}>_
+slider16:bOp=4<0,6,1{times,plus,minus,divided by,to the power of,max,min}>operation
+slider17:bArg2=4<0,3,1{x,y,z,value 1,value 2,value 3,a}>_
+slider18:b=0<0, 1, 0.001>[[output 0 - 1] b
+
+slider20:cArg1=6<0,3,1{x,y,z,value 1,value 2,value 3,a,b}>_
+slider21:cOp=6<0,6,1{times,plus,minus,divided by,to the power of,max,min}>operation
+slider22:cArg2=3<0,3,1{x,y,z,value 1,value 2,value 3,a,b}>_
+slider23:c=0<0, 1, 0.001>[[output 0 - 1] c
+
+slider25:dArg1=6<0,3,1{x,y,z,value 1,value 2,value 3,a,b,c}>_
+slider26:dOp=5<0,6,1{times,plus,minus,divided by,to the power of,max,min}>operation
+slider27:dArg2=2<0,3,1{x,y,z,value 1,value 2,value 3,a,b,c}>_
+slider28:d=0<0, 1, 0.001>[[output 0 - 1] d
+
+@init
+function getArgValue(arg)
+(
+  arg == 0 ? x :
+  arg == 1 ? y :
+  arg == 2 ? z :
+  arg == 3 ? const1 :
+  arg == 4 ? const2 :
+  arg == 5 ? const3 :
+  arg == 6 ? a :
+  arg == 7 ? b :
+  arg == 8 ? c :
+  d
+);
+
+function calculate(arg1, op, arg2)
+(
+  v1 = getArgValue(arg1);
+  v2 = getArgValue(arg2);
+  op == 0 ? v1 * v2 :
+  op == 1 ? v1 + v2 :
+  op == 2 ? v1 - v2 :
+  op == 3 ? v1 / v2 :
+  op == 4 ? v1 ^ v2 :
+  op == 5 ? max(v1, v2) :
+  min(v1, v2);
+);
+
+@slider
+a=calculate(aArg1, aOp, aArg2);
+b=calculate(bArg1, bOp, bArg2);
+c=calculate(cArg1, cOp, cArg2);
+d=calculate(dArg1, dOp, dArg2);
